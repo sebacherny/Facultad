@@ -1,0 +1,54 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[english,spanish]{babel}
+
+\title{Concesión de internet a escuelas}
+\author{Sebastián Cherny y Martín Vacas Vignolo }
+
+\begin{document}
+
+\maketitle
+
+\section{Introducción}
+
+En este problema, se presenta la dificultad de asignar empresas proveedoras del servicio de internet, a escuelas de toda una ciudad.
+
+La manera de plantear el modelado fue dividir a la ciudad en secciones, definir en qué secciones las empresas pueden ofrecer su servicio, y proponer una grilla de precios de acuerdo a la cantidad de escuelas asignadas a cada empresa, habiendo descuentos ofrecidos por las empresas según la cantidad de escuelas resulten asignadas.
+
+Usamos archivos con la información de los precios, nombres de las empresas, etcétera, para facilitar la escalabilidad del modelo, por si cambiaran los precios o se agregaran empresas a la oferta.
+
+\section{Resultado óptimo}
+Al proponer el modelo y correrlo, se observa que el costo mínimo es de \$ 665 992.06 , como resultado de asignar todas las escuelas a la misma empresa (obteniendo así su mayor descuento posible).
+
+
+\section{Óptimo alternativo}
+Implementamos el algoritmo propuesto de óptimos relativos, que simplemente lo que hace es, dada una solución (óptima), elegir valores para una nueva solución tal que al menos uno de los valores nuevos difiera con su valor correspondiente en la solución dada.\\
+Primero, viendo la propuesta en uno de los PDFs, se entiende que exactamente uno de los valores debe cambiar. En el otro PDF se ve que el modelo pediría que por lo menos uno de los valores cambie. Igualmente, en nuestro caso, analizando el primer resultado (todas las escuelas a una empresa), se ve fácilmente que cualquiera de los dos casos dará como solución el mencionado en la sección anterior, es decir todas menos 1 a la misma empresa Cablevisión, y la restante a Telmex.\\
+Como nuestra solución no diferencia escuelas, esta escuela podrá ser de cualquier sección en donde Telmex haya ofertado.\\
+Comentario: Primero en el modelo del PDF que dice que exactamente uno debe cambiar, lo entendimos como que la suma debía ser igual a $1$ pero de cada $(i,j)$ donde la solución era no nula, es decir que todos los valores no nulos debían cambiar. Pero esto no arrojaría ninguna solución dado que para la región $1$ el valor no puede aumentar pues se asignan todas las escuelas a Cablevisión, y no hay otra empresa que haya ofertado ahí, por lo que tampoco podía disminuir.
+
+
+\section{Intentando evitar monopolio}
+Algo que se nos ocurrió hacer, dado que una vez elegido el modelo es sencillo hacerle algunas pequeñas modificaciones, fue obligar al modelo a que la solución que encuentre utilice al menos dos empresas distintas; pero con esta restricción el modelo simplemente cambió el proveedor de una escuela, utilizando la empresa de menor costo individual para una sola escuela asignada (Telmex). Así se obtiene un costo mínimo de \$ 666 658.22. También, pidiéndole al modelo que asigne al menos una escuela a todas las empresas, se ve que le asigna 1 a cada una de los otras 3 empresas y todas las restantes siguen siendo asignadas a Cablevisión (modelo TP-al-menos-N-empresas.zpl) .
+
+\section{Controlando cantidad de escuelas}
+Dado que la restricción de ``al menos dos empresas`` no modificó mucho la situación, planteamos un modelo en donde la cantidad de escuelas asignadas a cada empresa esté restringida. Imposibilitando asignar más de 599 escuelas a la misma empresa, se obtiene un costo de \$ 1 315 700.13 con una distríbución que utiliza a las cuatro empresas.\\
+Si el límite de escuelas en cambio es 699, el precio total es de \$ 1 231 379.93 , utilizando todas las empresas excepto Telefónica.\\
+Una restricción así quizás podría ser útil pensando en que distribuyendo mejor las escuelas, si en un futuro el servicio de una empresa empeorara considerablemente, o la empresa se fuera de Argentina o quebrara, la reestructuración que habría que hacer sería menos problemática que si hubiera que cambiar el servicio de todas las escuelas.
+
+
+\section{Precios ofertados según competencia}
+Un modelo bastante distinto se puede pensar si los precios ofertados por las empresas dependen, en vez de la cantidad de escuelas asignadas, de la oferta en cada una de ellas.
+El modelo presentado asigna el precio más bajo dado por cada empresa, en las regiones en donde tiene competencia, y el segundo más bajo en donde no la tiene. (También se puede pensar en el más alto en estas últimas regiones dado que justamente no tienen competencia y estaríamos obligados a contratarla,) \\
+En este caso, la asignación de empresas a regiones cambia abrutpamente (puede verse que las escuelas de una misma región serán asignadas a la misma empresa, ya que los precios ofertadas para ellas son los mismos sin ninguna otra dependencia): La región $1$ se la lleva Cablevisión obviamente (dado que no tiene competencia), al igual que la región $5$. Las regiones $2$ y $6$ son de Telefonica, y las regiones $3$ y $4$ son de Telecom. Obteniéndose un precio total de \$ 840 461.25 . \\
+Sobre el código en zimpl: Hubiera estado bueno poder tener la variable ``precio`` usando los archivos ``ofrecen\_servicio.txt`` para saber si hay competencia en los sectores, y ``precios`` para obtener el más bajo, pero no pudimos lograrlo. Creamos un archivo de texto repitiendo esa información y organizándola de una manera útil para zimpl.
+
+\section{Distribución de escuelas para cada empresa}
+
+Una vez establecida la cantidad de escuelas de cada territorio, puede pensarse el problema de cómo conviene asignar cada escuela a una empresa, metiéndonos dentro de cada territorio.
+Una manera sencilla de resolver este problema es simplemente, para cada sección, ordenar las escuelas (de este a oeste, norte a sur, por distancia a alguna esquina o cualquier ordenamiento deseado) y asignar las primeras a una empresa, las siguiente a otra (siempre las cantidades que correspondan según nuestra solución óptima de costo), y así siguiendo. En este trabajo se presenta una solución en Python que asigna de esta manera las escuelas de cada sección, ordenando de norte a sur o de oeste a este según qué eje sea el mayor viendo las escuelas del territorio. El algoritmo toma como input un archivo con la solución brindada por el modelo hecho en Zimpl (del cual toma la cantidad de escuelas en cada territorio como la suma de las asignadas a las empresas), y un archivo con las coordenadas de las escuelas (esta parte no está implementada por cuestiones prácticas, se usa una función rándom para obtener valores de X e Y de la escuela al azar).
+
+Otra manera de repartir las escuelas a las empresas podría ser como lo dice el texto, minimizando la mayor distancia entre dos escuelas asignadas a la misma empresa, o minimizando el área cubierta por las empresas. Hay muchas maneras y dependiendo de la situación se puede pensar cuál conviene, pero para computar soluciones a estas situaciones se necesitaría más tiempo de procesamiento.
+
+
+\end{document}
