@@ -1,0 +1,170 @@
+\documentclass[a4paper]{article}
+\usepackage[english,spanish]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{verse}
+\usepackage[noend]{algpseudocode}
+\usepackage{listings}
+%% Sets page size and margins
+\usepackage[a4paper,top=2cm,bottom=2cm,left=2cm,right=2cm,marginparwidth=1.75cm]{geometry}
+%% Useful packages
+\usepackage{parskip}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage[usenames]{color}
+\usepackage[colorinlistoftodos]{todonotes}
+\usepackage[colorlinks=true, allcolors=blue]{hyperref}
+
+\newcommand\ZZ{\mathbb Z}
+\newcommand\BB{\mathbb B}
+
+\newcommand{\verso}[1] {
+\settowidth{\versewidth}{123456789012345678901234567890}%
+\begin{minipage}[t]{\dimexpr\versewidth+1pt\relax}
+\begin{verse}[\versewidth]
+{\fontfamily{qzc}\selectfont\large
+  #1
+}
+\end{verse}
+\end{minipage}\bigskip
+}
+
+\title{Trabajo Práctico 2}
+\author{Daniela Alban, Sebastian Cherny, Gabriel Krimker y Agustin  Vera.}
+\begin{document}
+\maketitle
+
+Construímos un léxico usando una estructura de árbol. Consideramos las palabras caminos que van desde el nodo raíz hasta los nodos que tienen un True en $finDePalabra$, donde las flechas serán las letras.
+
+
+\section*{Clase Nodo}
+Le definimos un booleano $finDePalabra$ para saber si termina un camino en ese nodo y un diccionario $referencia$ el cual contiene a las flechas que apuntan a otro nodo.  
+
+La estructura de representación del nodo es $$< finDePalabra:\BB, \,\, referencia:diccionario <letra, Nodo>>.$$
+
+El invariante de representación del TAD Nodo está dado por la condición de que cada letra que esté en el diccionario haga referencia a un nodo.
+
+La construcción de un nuevo Nodo:
+
+$ n \leftarrow Nodo(x) $
+
+El acceso a los campos del nodo $n$:
+
+$n.finDePalabra=x$ (donde $x$ es booleano)
+
+$n.referencia=y$ (donde $y$ es un diccionario que relaciona cada letra con un nodo)
+
+
+\section*{Clase Lexico}
+La estructura de representación es
+$$<raiz:ref(Nodo), \,\, cantidadDePalabras: \ZZ>$$
+
+El invariante de representación del TAD LEXICO está dado por las siguientes condiciones: en primer lugar $cantidadDePalabras$ coincide con la cantidad de nodos que tienen True en $finDePalabra$; por otro lado, debe tener forma arbórea (es decir, no puede haber ciclos y cada nodo recibe una única flecha) donde cada flecha se relaciona con un nodo; y finalmente, $raiz$ debe apuntar al primer nodo del árbol (es decir a la raíz).
+
+\subsection*{Los algoritmos de las operaciones del TAD Léxico:}
+
+\subsubsection*{Crear un léxico:}
+
+El constructor del léxico va a tener una referencia al primer nodo del árbol y otra a la cantidad de palabras del léxico.
+
+\textcolor{blue}{NuevoLexico() $\rightarrow$ Lexico:}
+
+$L \leftarrow NuevoLexico ()$
+
+$L.cantidadDePalabras=k$ (donde $k$ es un número entero)
+
+$L.raiz=n$ (donde $n$ es un nodo)
+
+Como crear un léxico es asignarle un valor a $l.cantidadDePalabras $ y un nodo a $l.raiz $, tiene orden \textcolor{red}{O(1)}.
+
+\subsubsection*{Cantidad de palabras:}
+
+\textcolor{blue}{CantidadDePalabras(L) $\rightarrow \ZZ$ :}
+
+$ RV \leftarrow L.cantidadDePalabras $
+
+Como Lexico tiene guardada la cantidad de palabras en $L.cantidadDePalabras$, la función $CantidadDePalabras$ devuelve ese valor en \textcolor{red}{O(1)}.  
+
+\subsubsection*{Existe:}
+
+\textcolor{blue}{Existe(L,P) $\rightarrow \BB $:}
+
+$ letra \leftarrow L.raiz $\hspace{0.5cm} \textcolor{red}{O(1)}
+
+$ i \leftarrow 0	$\hspace{0.5cm} \textcolor{red}{O(1)}
+
+ while ($ i < longitud(P)$ $\wedge$ la letra i-ésima de la palabra $P$ esté relacionada con un Nodo en
+
+$ letra.referencia$) $\{$\hspace{0.5cm} \textcolor{red}{O(1)} \hspace{0.5cm} \textcolor{red}{while: O(longitud(P)) iteraciones} 
+
+$\hspace{0.5cm}$cambiar $letra$ por el nodo que está relacionado con la i-ésima letra de $P$ en $letra.referencia$ \hspace{0.5cm} \textcolor{red}{O(1)}
+
+$\hspace{0.5cm } i \leftarrow i+1 $\hspace{0.5cm} \textcolor{red}{O(1)}
+
+$\}$
+
+$ RV \leftarrow (i = longitud(P) \wedge letra.finDePalabra) $ \hspace{0.5cm} \textcolor{red}{O(1)}
+	
+   
+\subsubsection*{Agregar Palabra:}
+\textcolor{blue}{AgregarPalabra (L,P): }
+
+If not $(L.Existe(P)) \{$ \hspace{0.5cm} \textcolor{red}{O(longitud(P))} 
+
+\hspace{0.5cm} if $(longitud(P) \neq 0) \{$\hspace{0.5cm} \textcolor{red}{O(1)}
+
+\hspace{1cm} $i\leftarrow 0$ \hspace{0.5cm} \textcolor{red}{O(1)}
+
+\hspace{1cm} $letra \leftarrow L.raiz$ \hspace{0.5cm} \textcolor{red}{O(1)}
+
+\hspace{1cm} while$(i<longitud(P))\{$ \hspace{0.5cm} \textcolor{red}{O(1)} \hspace{0.5cm} \textcolor{red}{while: O(longitud(P)) iteraciones} 
+
+\hspace{1.5cm} if (la letra i-ésima de $P$ no está relacionada con un Nodo en $letra.referencia$)$\{$\hspace{0.5cm} \textcolor{red}{O(1)}
+
+\hspace{2cm} crear $Nodo (False)$ y relacionar con la i-ésima letra de $P$ en $letra.referencia$\hspace{0.5cm} \textcolor{red}{O(1)} 
+
+\hspace{1.5cm}$\}$
+                        
+\hspace{1.5cm}	cambiar $letra$ por el nodo relacionado con la i-ésima letra de $P$ en $letra.referencia$\hspace{0.5cm} \textcolor{red}{O(1)}
+
+\hspace{1.5cm} $i \leftarrow i+1$\hspace{0.5cm} \textcolor{red}{O(1)}
+
+\hspace{1cm}$\}$
+
+\hspace{1cm}  $letra.finDePalabra \leftarrow$ True \hspace{0.5cm} \textcolor{red}{O(1)}
+  
+\hspace{0.5cm} $else$
+
+\hspace{1cm} $L.raiz.finDePalabra \leftarrow$ True \hspace{0.5cm} \textcolor{red}{O(1)}  
+                
+\hspace{1cm} $L.cantidadDePalabras \leftarrow L.cantidadDePalabras + 1$\hspace{0.5cm} \textcolor{red}{O(1)} 
+
+\hspace{0.5cm}$\}$
+
+
+\subsubsection*{Eliminar Palabra:}
+\textcolor{blue}{L.EliminarPalabra(P):}
+
+If $(Existe(P)) \{$\hspace{0.5cm} \textcolor{red}{O(longitud(p))} 
+
+\hspace{0.5cm}	$letra \leftarrow L.raiz$\hspace{0.5cm} \textcolor{red}{O(1)} 
+
+\hspace{0.5cm} $	i \leftarrow 0$ \hspace{0.5cm} \textcolor{red}{O(1)} 
+
+\hspace{0.5cm} 	while ($i < longitud(P)$)$\{$\hspace{0.5cm} \hspace{0.5cm} \textcolor{red}{O(1)}  \hspace{0.5cm} \textcolor{red}{while: O(longitud(P)) iteraciones}
+
+\hspace{1cm} cambiar $letra$ por el nodo relacionado con la i-ésima letra de $P$ en $letra.referencia$\hspace{0.5cm} \textcolor{red}{O(1)} 
+  
+
+\hspace{1cm} $i \leftarrow i+1$	\hspace{0.5cm} \textcolor{red}{O(1)} 
+
+\hspace{0.5cm}$\}$
+
+\hspace{0.5cm} letra.finDePalabra $\leftarrow$ False\hspace{0.5cm} \textcolor{red}{O(1)} 
+
+\hspace{0.5cm} $ L.cantidadDePalabras \leftarrow L.cantidadDePalabras - 1$ \hspace{0.5cm} \textcolor{red}{O(1)} 
+
+$\}$
+
+\end{document}
