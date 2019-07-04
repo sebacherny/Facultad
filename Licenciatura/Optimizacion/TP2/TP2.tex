@@ -100,4 +100,12 @@ Para esta consigna se utilizó el algoritmo de simmulated annealing (SA), que ar
 Con el algoritmo como el visto en clase con los parámetros estándares, la solución no era lo suficientemene buena (acá podemos saberlo porque tenemos los valores óptimos).
 De todas maneras, al combinarse el algoritmo con la técnica de 'random restart' (probar varios puntos iniciales), se mejoró exponencialmente el resultado, con el costo de aumentar el tiempo. Sin embargo, el algoritmo tarda poco en correr (10 segundos para ambas funciones probando 2000 puntos iniciales al azar para cada función), por lo que podemos pensar que la solución es eficiente y cumple los estándares de tiempo. Si se quisiera algo más rápido se podría jugar quizás con los parámetros o aplicar alguna otra técnica además de SA.
 
+\subsection{Resultados}
+
+Corriendo el algoritmo con el seed 0 ('python consigna2.py 0' en Linux, o simplemente con un '0' en los argumentos), el punto obtenido para la función de Holder table es el (8.03736161, 9.64460137), donde la función evalúa a -19.2013371227.
+
+Y con el mismo seed, para la función segunda de Schaffer se obtiene el punto (0.02797762, -0.02685234), donde la función evalúa a 4.93750512698e-09 .
+
+Sabiendo que los menores valores son -19.2085 y 0 respectivamente, vemos que las diferencias entre los valores obtenidos y los óptimos son muy pequeñas (el hecho de que un valor sea 0 nos impide hablar de porcentajes).
+
 \end{document}
