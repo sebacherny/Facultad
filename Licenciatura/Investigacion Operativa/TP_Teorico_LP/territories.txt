@@ -1,0 +1,6 @@
+1;Suroeste;248
+2;Centro;287
+3;Norte;77
+4;Este1;22
+5;Este2;14
+6;Sureste;61
