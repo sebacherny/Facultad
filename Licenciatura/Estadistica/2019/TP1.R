@@ -26,7 +26,7 @@ get_chosen_value <- function(r, n, our_sample) {
 }
 
 calc_p_n_r <- function(n, r, n_iter=1000) {
-	# 1 is best, n is the worst
+	# n is best, 1 is the worst
 	if (n == r) {
                 return (0);
 	}
@@ -81,7 +81,7 @@ graph_function <- function(X, Y, filename, xlabel, ylabel, adjust_line) {
 	FILES_FOLDER = getwd();
 	filepath = paste(FILES_FOLDER, filename, sep="/");
 	png(filepath);
-	plot(X, Y, type="h", xlab=xlabel, ylab=ylabel);
+	plot(X, Y, xlab=xlabel, ylab=ylabel, pch=19);
         print(paste("See file ", filepath));
 	if (!missing(adjust_line)) {
 		line_fit = lm(Y ~ X);
@@ -91,9 +91,8 @@ graph_function <- function(X, Y, filename, xlabel, ylabel, adjust_line) {
 	dev.off();
 }
 
-ej3 <- function() {
+ej3 <- function(N=50) {
 	print("Ej 3");
-	N = 50;
 	vals_x = 1:(N-1);
 	vals_y = get_vector_of_probas_iterating_r(N);
 	graph_function(vals_x, vals_y, "ej3.png", "r", "p_{n,r}");
@@ -110,17 +109,18 @@ ej4 <- function() {
 	graph_function(vals_x, vals_y, "ej4.png", "n", "r_n", TRUE);
 }
 
-scatter_plot <- function(X, Y, filename, xlabel, ylabel) {
+scatter_plot_and_e <- function(X, Y, filename, xlabel, ylabel) {
 	FILES_FOLDER = getwd();
 	filepath = paste(FILES_FOLDER, filename, sep="/");
 	png(filepath);
 	plot(X, Y, xlab=xlabel, ylab=ylabel, pch=19);
+        abline(h=2.7182818284590452353602874713527);
         print(paste("See file ", filepath));
 	dev.off();
 }
 
 
-ej5 <- function(num_samples=60) {
+ej5 <- function(num_samples=30) {
 	print("Ej 5");
         n_array = c();
         fraction_array = c();
@@ -133,9 +133,9 @@ ej5 <- function(num_samples=60) {
                 fraction_array = c(fraction_array, real_n/avg_r_n);
 	}
 
-        scatter_plot(n_array, fraction_array, "ej5.png", "n", "r_n");
+        scatter_plot_and_e(n_array, fraction_array, "ej5.png", "n", "n/r_n");
 }
 
-#ej3();
-#ej4();
+ej3();
+ej4();
 ej5();
