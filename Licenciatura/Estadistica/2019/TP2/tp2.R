@@ -1,3 +1,5 @@
+# Link overleaf: https://www.overleaf.com/project/5d71179c4e863e000133fe9f
+# Link consignas: http://cms.dm.uba.ar/academico/materias/2docuat2019/estadistica_M/2019/tp2.pdf
 
 procedure_one_person <- function(p) {
 	dice <- sample(1:6, 1)
