@@ -16,7 +16,7 @@ procedure_one_person <- function(p) {
 	return (sample(0:1, 1))
 }
 
-p_emv <- function(n, p, q=0) {
+p_emv_and_ecm <- function(n, p, q=0) {
     reality <- 0
     all_x_i = c()
     for (person in 1:n) {
@@ -25,19 +25,18 @@ p_emv <- function(n, p, q=0) {
         all_x_i = c(all_x_i, x_i)
     }
     p_estimation = reality / n
-    return (p_estimation);
-#    ecm = 0
-#    for (i in 1:n){
-#        ecm = ecm + (all_x_i[i] - p_estimation)^2
-#    }
-#    if (q==1){
-#        print(p_estimation)
-#        print(ecm/n)
-#    }
-#    return (c(p_estimation, ecm/n))
+    ecm = 0
+    for (i in 1:n){
+        ecm = ecm + (all_x_i[i] - p_estimation)^2
+    }
+    if (q==1){
+        print(p_estimation)
+        print(ecm/n)
+    }
+    return (c(p_estimation, ecm/n))
 }
 
-p_a <- function(n, p) {
+p_a_and_ecm <- function(n, p) {
     reality <- 0
     all_x_i = c()
     for (person in 1:n) {
@@ -46,20 +45,18 @@ p_a <- function(n, p) {
         all_x_i = c(all_x_i, x_i)
     }
     p_estimation = 3 * reality / n - 1
-    return (p_estimation)
-#    ecm = 0
-#    for (i in 1:n){
-#        ecm = ecm + (all_x_i[i] - p_estimation)^2
-#    }
-#    return (c(p_estimation, ecm/n))
+    ecm = 0
+    for (i in 1:n){
+        ecm = ecm + (all_x_i[i] - p_estimation)^2
+    }
+    return (c(p_estimation, ecm/n))
 }
 
-p_b <- function(n, p) {
-    ans_p_a <- p_a(n, p)
-    p_a = ans_p_a
+p_b_and_ecm <- function(n, p) {
+    ans_p_a <- p_a_and_ecm(n, p)
+    p_a = ans_p_a[1]
     p_b = (p_a * (0 <= p_a && p_a <= 1) + (p_a > 1))
-    return (p_b)
-   # return (c(p_b, ans_p_a[2]))
+    return (c(p_b, ans_p_a[2]))
 #    if (0 <= tmp && tmp <= 1) {
 #        return (tmp);
 #    }
@@ -71,37 +68,35 @@ p_b <- function(n, p) {
 }
 
 p_c_ej6 <- function(n, p) {
-    ans_p_a <- p_a(n, p)
-    p_c = ans_p_a/3 + 1/3
-    return (p_c)
-#    return (c(ans_p_a[1]/3 + 1/3, ans_p_a[2]));
+    ans_p_a <- p_a_and_ecm(n, p)
+    return (c(ans_p_a[1]/3 + 1/3, ans_p_a[2]));
 }
 
 
 get_ECM_with_monte_carlo <- function(func, n, p, n_rep=10) {
 	result <- 0
 	for (essay in 1:n_rep) {
-		result = result + ((func(n,p) - p)^2)
+		result = result + func(n,p)[2]
 #		result <- result + ((func(n, p) - p) ^ 2)
 	}
 	return (result / n_rep)
 }
 
 ej2 <- function(n=1000, p=0.2) {
-	ecm_a = get_ECM_with_monte_carlo(p_a, n, p);
+	ecm_a = get_ECM_with_monte_carlo(p_a_and_ecm, n, p);
 	print(paste("El ECM de P_a es: ", ecm_a))
-	print(paste("El ECM del P_emv es: ", get_ECM_with_monte_carlo(p_emv, n, p)))
+	print(paste("El ECM del P_emv es: ", get_ECM_with_monte_carlo(p_emv_and_ecm, n, p)))
 	return (ecm_a)
 }
 
 ej3 <- function(n=1000, p=0.2) {
-	ecm_b = get_ECM_with_monte_carlo(p_b, n, p);
+	ecm_b = get_ECM_with_monte_carlo(p_b_and_ecm, n, p);
 	print(paste("El ECM de P_b es: ", ecm_b))
 	return (ecm_b);
 }
 
 ej4 <- function(n=1000, p=0.2, q=0.4) {
-	set_q <- (function(n, p) p_emv(n, p, q))
+	set_q <- (function(n, p) p_emv_and_ecm(n, p, q))
 	e_q <- get_ECM_with_monte_carlo(set_q, n, p)
 	return (e_q)
 }
@@ -114,6 +109,7 @@ ej5 <- function(ecm_a, ecm_b, n_sample=100, n=1000, p=0.2) {
 		q_vec <- c(q_vec, q)
 		asd = ej4(n, p, q)
 		e_q_vec <- c(e_q_vec, asd)
+		print(paste("q = ", q, " , e_q : ", asd))
 	}
 	# print(paste(a, b));
 	FILES_FOLDER = getwd();
