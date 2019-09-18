@@ -119,10 +119,13 @@ ej5 <- function(ecm_a, ecm_b, n_sample=100, n=1000, p=0.2) {
 	FILES_FOLDER = getwd();
 	filepath = paste(FILES_FOLDER, "ej5.png", sep="/");
 	png(filepath);
-	plot(q_vec, e_q_vec, xlab="q", ylab="e_q", pch=19);
-	abline(h=ecm_a);
-	abline(h=ecm_b);
-	print(paste("See file ", filepath));
+ 	plot(q_vec, e_q_vec, xlab="q", ylab="e_q", pch=19, col="black");
+ 	abline(h=ecm_a, col = "red");
+ 	abline(h=ecm_b, col = "blue");
+        legend("topleft",
+        c("data points","p_a", "p_b"),
+        fill=c("black", "red", "blue"))
+        print(paste("See file ", filepath));
 	dev.off();
 }
 
