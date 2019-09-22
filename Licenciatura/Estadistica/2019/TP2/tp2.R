@@ -26,15 +26,6 @@ p_emv <- function(n, p, q=0) {
     }
     p_estimation = reality / n
     return (p_estimation);
-#    ecm = 0
-#    for (i in 1:n){
-#        ecm = ecm + (all_x_i[i] - p_estimation)^2
-#    }
-#    if (q==1){
-#        print(p_estimation)
-#        print(ecm/n)
-#    }
-#    return (c(p_estimation, ecm/n))
 }
 
 p_a <- function(n, p) {
@@ -47,11 +38,6 @@ p_a <- function(n, p) {
     }
     p_estimation = 3 * reality / n - 1
     return (p_estimation)
-#    ecm = 0
-#    for (i in 1:n){
-#        ecm = ecm + (all_x_i[i] - p_estimation)^2
-#    }
-#    return (c(p_estimation, ecm/n))
 }
 
 p_b <- function(n, p) {
@@ -59,22 +45,12 @@ p_b <- function(n, p) {
     p_a = ans_p_a
     p_b = (p_a * (0 <= p_a && p_a <= 1) + (p_a > 1))
     return (p_b)
-   # return (c(p_b, ans_p_a[2]))
-#    if (0 <= tmp && tmp <= 1) {
-#        return (tmp);
-#    }
-#    if (tmp > 1) {
-#        return (1)
-#    }
-#    return (0)
-#    return (tmp * (0 <= tmp && tmp <= 1) + (tmp > 1))
 }
 
 p_c_ej6 <- function(n, p) {
     ans_p_a <- p_a(n, p)
     p_c = ans_p_a/3 + 1/3
     return (p_c)
-#    return (c(ans_p_a[1]/3 + 1/3, ans_p_a[2]));
 }
 
 
@@ -82,7 +58,6 @@ get_ECM_with_monte_carlo <- function(func, n, p, n_rep=10) {
 	result <- 0
 	for (essay in 1:n_rep) {
 		result = result + ((func(n,p) - p)^2)
-#		result <- result + ((func(n, p) - p) ^ 2)
 	}
 	return (result / n_rep)
 }
