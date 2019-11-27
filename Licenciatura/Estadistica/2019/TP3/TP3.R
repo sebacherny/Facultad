@@ -1,9 +1,7 @@
-## Resolucion del TP 3: Bootstrap
+# Sebastian Cherny y Melanie Sclar
 
-#Fijamos el seed asi el programa es replicable
 set.seed(1234)
 
-## Funcion que dada una muestra calcula los intervalos IC_i(sigma2) para i = 1,2,3,4.
 calcularIntervalos = function(muestra, q_perc, alpha = 0.05, nboot = 2000){
   estimador_muestra = quantile(muestra, q_perc)
   quantiles_boot = rep(NA,nboot)
@@ -28,9 +26,8 @@ show_results = function(muestra){
 }
 
 read_file_and_show_results = function(filepath){
-	print(filepath);
-	if (length(filepath) == 0){
-		filepath = paste(FILES_FOLDER, "datos_titanic.csv", sep="/")
+	if (filepath == ""){
+		filepath = paste(getwd(), "datos_titanic.csv", sep="/")
 	}
 	MyData <- read.csv(file=filepath, header=TRUE, sep=",")
 	show_results(MyData$Fare);
@@ -46,4 +43,14 @@ main = function(){
 }
 
 main();
+
+#[1] "Para el percentil  0.25 obtuve los siguientes intervalos de nivel 0.05: Metodo 1 = ( 7.83063484058902 ,  7.99016515941098 ) ; Metodo 2 = ( 7.8958 ,  8.05 )"
+#[1] "Cuando el percentil real de la muestra es:  7.9104"
+#[1] "--------------------------------------------------"
+#[1] "Para el percentil  0.5 obtuve los siguientes intervalos de nivel 0.05: Metodo 1 = ( 13.0274600194023 ,  15.8809399805977 ) ; Metodo 2 = ( 13 ,  15.7417 )"
+#[1] "Cuando el percentil real de la muestra es:  14.4542"
+#[1] "--------------------------------------------------"
+#[1] "Para el percentil  0.75 obtuve los siguientes intervalos de nivel 0.05: Metodo 1 = ( 28.176966950659 ,  33.823033049341 ) ; Metodo 2 = ( 29 ,  34.6550325 )"
+#[1] "Cuando el percentil real de la muestra es:  31"
+#[1] "--------------------------------------------------"
 
